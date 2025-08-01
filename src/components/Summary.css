@@ -1,0 +1,251 @@
+.summary {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.summary-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--navy-blue);
+  margin: 0 0 2rem 0;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.summary-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-gold), var(--deep-gold));
+  border-radius: 2px;
+}
+
+/* Cards do Resumo */
+.summary-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-icon {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: var(--light-gray);
+}
+
+.salary-card .card-icon {
+  background: linear-gradient(135deg, var(--accent-gold), var(--deep-gold));
+}
+
+.income-card .card-icon {
+  background: linear-gradient(135deg, var(--success-green), #047857);
+}
+
+.total-income-card .card-icon {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.expenses-card .card-icon {
+  background: linear-gradient(135deg, var(--warning-orange), #ea580c);
+}
+
+.balance-card.positive .card-icon {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.balance-card.negative .card-icon {
+  background: linear-gradient(135deg, var(--danger-red), #b91c1c);
+}
+
+.balance-card.neutral .card-icon {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-content h3 {
+  font-size: 0.9rem;
+  color: var(--sage-green);
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.card-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--navy-blue);
+  margin-bottom: 0.25rem;
+}
+
+.card-percentage {
+  font-size: 0.8rem;
+  color: var(--sage-green);
+  font-weight: 500;
+}
+
+.balance-card.positive .card-value {
+  color: var(--success-green);
+}
+
+.balance-card.negative .card-value {
+  color: var(--danger-red);
+}
+
+/* Análise Financeira */
+.financial-advice {
+  background: var(--light-gray);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.financial-advice h3 {
+  font-family: var(--font-heading);
+  color: var(--navy-blue);
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.advice-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.advice-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.advice-content p {
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.advice.excellent p {
+  color: var(--success-green);
+}
+
+.advice.good p {
+  color: var(--success-green);
+}
+
+.advice.warning p {
+  color: var(--warning-orange);
+}
+
+.advice.danger p {
+  color: var(--danger-red);
+}
+
+/* Barra de Progresso */
+.progress-bar-container {
+  margin-top: 1.5rem;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--navy-blue);
+  font-size: 0.9rem;
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: all 0.6s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .summary {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .summary {
+    padding: 1rem;
+  }
+  
+  .summary-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .card-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  
+  .advice-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .financial-advice {
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,475 @@
+.finance-calculator {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  height: fit-content;
+}
+
+.calculator-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.section-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--navy-blue);
+  margin: 0;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.section-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-gold), var(--deep-gold));
+  border-radius: 2px;
+}
+
+/* Seção do Salário */
+.salary-section {
+  background: var(--light-gray);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 2px dashed var(--border-color);
+}
+
+.salary-section label {
+  display: block;
+  font-weight: 600;
+  color: var(--navy-blue);
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 1rem;
+  color: var(--accent-gold);
+  font-weight: 600;
+  font-size: 1.1rem;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.salary-input,
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: white;
+  color: var(--navy-blue);
+}
+
+.salary-input:focus {
+  border-color: var(--accent-gold);
+}
+
+/* Formulário de Gastos */
+.expense-form,
+.income-form {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.expense-form h3,
+.income-form h3 {
+  font-family: var(--font-heading);
+  color: var(--navy-blue);
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+}
+
+.income-form {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(255, 255, 255, 0.95));
+  border: 2px solid rgba(212, 175, 55, 0.2);
+}
+
+.income-form h3 {
+  color: var(--deep-gold);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--navy-blue);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: white;
+  color: var(--navy-blue);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--accent-gold);
+}
+
+.button-group {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.btn-add {
+  background: linear-gradient(135deg, var(--accent-gold), var(--deep-gold));
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-income {
+  background: linear-gradient(135deg, var(--success-green), #047857);
+}
+
+.btn-add:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-add:active {
+  transform: translateY(0);
+}
+
+/* Lista de Gastos */
+.expenses-list,
+.incomes-list {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.expenses-header,
+.incomes-header {
+  background: var(--navy-blue);
+  color: white;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.incomes-header {
+  background: linear-gradient(135deg, var(--success-green), #047857);
+}
+
+.expenses-header h3,
+.incomes-header h3 {
+  font-family: var(--font-heading);
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.btn-clear {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-clear:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.expenses-table,
+.incomes-table {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.expense-item,
+.income-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  min-height: 80px;
+}
+
+.expense-item:hover,
+.income-item:hover {
+  background: var(--light-gray);
+}
+
+.income-item:hover {
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.expense-item:last-child,
+.income-item:last-child {
+  border-bottom: none;
+}
+
+/* Animação suave quando entra em modo de edição */
+.expense-item:has(.edit-form),
+.income-item:has(.edit-form) {
+  background: var(--light-gray);
+  border-left: 4px solid var(--accent-gold);
+  padding-left: calc(1.5rem - 4px);
+}
+
+.expense-info,
+.income-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.expense-name,
+.income-name {
+  font-weight: 600;
+  color: var(--navy-blue);
+  font-size: 1rem;
+}
+
+.expense-category,
+.income-category {
+  font-size: 0.8rem;
+  color: var(--sage-green);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.income-category {
+  color: var(--deep-gold);
+}
+
+.expense-actions,
+.income-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.expense-value,
+.income-value {
+  font-weight: 600;
+  color: var(--navy-blue);
+  font-size: 1.1rem;
+}
+
+.income-value {
+  color: var(--success-green);
+}
+
+.btn-remove {
+  background: var(--danger-red);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.btn-remove:hover {
+  background: #b91c1c;
+  transform: scale(1.1);
+}
+
+.btn-edit {
+  background: var(--accent-gold);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.btn-edit:hover {
+  background: var(--deep-gold);
+  transform: scale(1.1);
+}
+
+/* Estilos para o modo de edição */
+.edit-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edit-inputs {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.edit-input,
+.edit-select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+}
+
+.edit-input:focus,
+.edit-select:focus {
+  border-color: var(--accent-gold);
+  outline: none;
+}
+
+.edit-value-group {
+  position: relative;
+}
+
+.edit-input-value {
+  width: 100%;
+  padding: 0.5rem 0.5rem 0.5rem 2.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+}
+
+.edit-value-group .currency-symbol {
+  left: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn-save,
+.btn-cancel {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.btn-save {
+  background: var(--success-green);
+  color: white;
+}
+
+.btn-save:hover {
+  background: #047857;
+  transform: scale(1.1);
+}
+
+.btn-cancel {
+  background: var(--sage-green);
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: var(--warm-gray);
+  transform: scale(1.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .finance-calculator {
+    padding: 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .expenses-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .expense-item {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .expense-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .edit-inputs {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .edit-actions {
+    justify-content: center;
+  }
+
+  .edit-form {
+    padding: 1rem;
+    background: var(--light-gray);
+    border-radius: 8px;
+    margin: 0.5rem 0;
+  }
+}
