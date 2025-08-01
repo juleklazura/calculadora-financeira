@@ -102,3 +102,4 @@ Este projeto foi desenvolvido como uma aplicação pessoal de controle financeir
 ## Licença
 
 Projeto de uso pessoal e educacional.
+# calculadora-financeira
