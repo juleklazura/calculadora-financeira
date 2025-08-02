@@ -1,10 +1,10 @@
 # Calculadora Financeira
 
-Uma aplicação web elegante para controle de gastos pessoais, desenvolvida com React e design old money.
+Uma aplicação web elegante para controle de gastos pessoais, desenvolvida com React.
 
 ## Sobre o Projeto
 
-Esta calculadora financeira permite que você gerencie suas finanças pessoais de forma simples e elegante. O projeto foi desenvolvido com foco na usabilidade e na experiência do usuário, mantendo um design sofisticado inspirado no estilo old money.
+Esta calculadora financeira permite que você gerencie suas finanças pessoais de forma simples e elegante. O projeto foi desenvolvido com foco na usabilidade e na experiência do usuário.
 
 ## Funcionalidades
 
@@ -13,16 +13,6 @@ Esta calculadora financeira permite que você gerencie suas finanças pessoais d
 - **Controle de Gastos**: Registre e categorize seus gastos
 - **Edição em Tempo Real**: Edite valores e categorias diretamente na interface
 - **Resumo Financeiro**: Visualize análises e dicas baseadas em seus dados
-- **Persistência de Dados**: Seus dados são salvos automaticamente no navegador
-- **Validação de Entrada**: Impede inserção de valores negativos
-
-## Tecnologias Utilizadas
-
-- **React 18**: Framework principal
-- **Vite**: Ferramenta de build e desenvolvimento
-- **CSS3**: Estilização com variáveis customizadas
-- **LocalStorage**: Persistência de dados local
-- **JavaScript ES6+**: Lógica da aplicação
 
 ## Como Executar
 
@@ -69,31 +59,14 @@ src/
 └── App.jsx            # Componente principal
 ```
 
-## Deploy
-
-O projeto está configurado para deploy em plataformas de hospedagem estática como:
-- GitHub Pages
-- Netlify
-- Vercel
-
-Para fazer o build de produção:
-```bash
-npm run build
-```
-
-## Características do Design
-
-- **Paleta Old Money**: Tons de azul marinho, dourado e creme
-- **Tipografia Elegante**: Combinação de Playfair Display e Inter
-- **Interface Responsiva**: Funciona em desktop e mobile
-- **Animações Suaves**: Transições elegantes entre estados
-
 ## Armazenamento de Dados
 
 Os dados são salvos localmente no navegador usando localStorage:
 - Não requer login ou cadastro
 - Dados persistem entre sessões
 - Privacidade total do usuário
+
+
 
 ## Contribuição
 

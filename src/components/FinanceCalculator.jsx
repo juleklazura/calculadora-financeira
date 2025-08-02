@@ -16,7 +16,7 @@ const FinanceCalculator = ({
 }) => {
   const [expenseName, setExpenseName] = useState('');
   const [expenseValue, setExpenseValue] = useState('');
-  const [expenseCategory, setExpenseCategory] = useState('Alimentação');
+  const [expenseCategory, setExpenseCategory] = useState('Contas e Serviços');
   
   const [incomeName, setIncomeName] = useState('');
   const [incomeValue, setIncomeValue] = useState('');
@@ -29,20 +29,38 @@ const FinanceCalculator = ({
     'Alimentação',
     'Transporte',
     'Moradia',
+    'Contas e Serviços',
     'Saúde',
     'Educação',
-    'Lazer',
-    'Vestuário',
+    'Lazer e Entretenimento',
+    'Vestuário e Beleza',
+    'Tecnologia',
+    'Pets',
+    'Presentes e Doações',
+    'Viagens',
+    'Investimentos',
+    'Emergências',
+    'Impostos e Taxas',
+    'Seguros',
+    'Manutenção',
     'Outros'
   ];
 
   const incomeCategories = [
     'Freelance',
+    'Trabalho Extra',
     'Vendas',
     'Investimentos',
     'Aluguel',
     'Comissões',
     'Bônus',
+    'Dividendos',
+    'Aposentadoria',
+    'Pensão',
+    'Monetização Online',
+    'Consultoria',
+    'Cashback',
+    'Prêmios',
     'Outros'
   ];
 
@@ -56,7 +74,7 @@ const FinanceCalculator = ({
       });
       setExpenseName('');
       setExpenseValue('');
-      setExpenseCategory('Alimentação');
+      setExpenseCategory('Contas e Serviços');
     }
   };
 
@@ -164,7 +182,7 @@ const FinanceCalculator = ({
                 type="text"
                 value={incomeName}
                 onChange={(e) => setIncomeName(e.target.value)}
-                placeholder="Ex: Freelance, Vendas"
+                placeholder="Ex: Freelance, Dividendos, Cashback"
                 required
               />
             </div>
@@ -305,7 +323,7 @@ const FinanceCalculator = ({
                 type="text"
                 value={expenseName}
                 onChange={(e) => setExpenseName(e.target.value)}
-                placeholder="Ex: Supermercado"
+                placeholder="Ex: Conta de luz, Supermercado, Netflix"
                 required
               />
             </div>
