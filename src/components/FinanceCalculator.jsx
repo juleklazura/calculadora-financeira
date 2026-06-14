@@ -16,52 +16,116 @@ const FinanceCalculator = ({
 }) => {
   const [expenseName, setExpenseName] = useState('');
   const [expenseValue, setExpenseValue] = useState('');
-  const [expenseCategory, setExpenseCategory] = useState('Contas e Serviços');
+  const [expenseCategory, setExpenseCategory] = useState('Supermercado');
   
   const [incomeName, setIncomeName] = useState('');
   const [incomeValue, setIncomeValue] = useState('');
-  const [incomeCategory, setIncomeCategory] = useState('Freelance');
+  const [incomeCategory, setIncomeCategory] = useState('Freelance / Projeto');
   
   const [editingExpense, setEditingExpense] = useState(null);
   const [editingIncome, setEditingIncome] = useState(null);
 
   const categories = [
-    'Alimentação',
-    'Transporte',
-    'Moradia',
-    'Contas e Serviços',
-    'Saúde',
-    'Educação',
-    'Lazer e Entretenimento',
-    'Vestuário e Beleza',
-    'Tecnologia',
-    'Pets',
-    'Presentes e Doações',
-    'Viagens',
-    'Investimentos',
-    'Emergências',
-    'Impostos e Taxas',
+    // Alimentação
+    'Supermercado',
+    'Restaurante e Delivery',
+    'Padaria e Confeitaria',
+    'Bebidas',
+    'Feira e Hortifruti',
+    // Moradia
+    'Aluguel / Financiamento',
+    'Condomínio',
+    'IPTU',
+    'Energia Elétrica',
+    'Água e Saneamento',
+    'Gás',
+    'Internet e TV',
+    'Telefone',
+    'Manutenção e Reforma',
+    // Transporte
+    'Combustível',
+    'Estacionamento e Pedágio',
+    'Transporte por App (Uber/99)',
+    'Transporte Público',
+    'Manutenção do Veículo',
+    'IPVA e Seguro Auto',
+    // Saúde
+    'Plano de Saúde',
+    'Consultas e Exames',
+    'Farmácia e Medicamentos',
+    'Academia e Esportes',
+    'Psicólogo / Terapia',
+    'Dentista',
+    // Educação
+    'Mensalidade Escolar / Faculdade',
+    'Cursos e Capacitação',
+    'Livros e Material Escolar',
+    'Idiomas',
+    // Lazer e Entretenimento
+    'Streaming (Netflix, Spotify…)',
+    'Cinema, Teatro e Shows',
+    'Viagens e Hospedagem',
+    'Hobbies',
+    'Jogos',
+    // Vestuário e Beleza
+    'Roupas e Calçados',
+    'Salão de Beleza e Barbearia',
+    'Cosméticos e Perfumaria',
+    // Tecnologia
+    'Eletrônicos e Gadgets',
+    'Assinaturas de Software',
+    'Acessórios Tech',
+    // Família e Filhos
+    'Escola dos Filhos',
+    'Brinquedos e Atividades Infantis',
+    'Babá / Cuidador',
+    // Financeiro
+    'Cartão de Crédito',
+    'Financiamento / Empréstimo',
     'Seguros',
-    'Manutenção',
-    'Outros'
+    'Investimentos',
+    // Pets
+    'Ração e Petiscos',
+    'Veterinário',
+    'Pet Shop e Banho',
+    // Outros
+    'Presentes e Doações',
+    'Impostos e Taxas',
+    'Emergências',
+    'Outros',
   ];
 
   const incomeCategories = [
-    'Freelance',
-    'Trabalho Extra',
-    'Vendas',
-    'Investimentos',
-    'Aluguel',
+    // Trabalho
+    'Salário',
+    'Freelance / Projeto',
+    'Trabalho Extra / Bico',
     'Comissões',
-    'Bônus',
-    'Dividendos',
-    'Aposentadoria',
-    'Pensão',
-    'Monetização Online',
+    'Bônus e PLR',
+    '13º Salário',
+    'Férias',
+    'Horas Extras',
+    // Negócios
+    'Vendas de Produtos',
+    'Prestação de Serviços',
     'Consultoria',
+    // Rendimentos
+    'Aluguel de Imóvel',
+    'Dividendos',
+    'Rendimento de Investimentos',
+    'Juros e CDB / Tesouro',
+    // Digital
+    'Monetização Online (YouTube, etc.)',
+    'Marketing de Afiliados',
+    'Renda de Conteúdo',
+    'Vendas Online (Shopee, etc.)',
+    // Outros
+    'Aposentadoria / Pensão',
+    'Reembolso',
     'Cashback',
-    'Prêmios',
-    'Outros'
+    'Prêmios e Sorteios',
+    'Herança / Doação Recebida',
+    'Outros',
   ];
 
   const handleAddExpense = (e) => {
@@ -74,7 +138,7 @@ const FinanceCalculator = ({
       });
       setExpenseName('');
       setExpenseValue('');
-      setExpenseCategory('Contas e Serviços');
+      setExpenseCategory('Supermercado');
     }
   };
 
@@ -88,7 +152,7 @@ const FinanceCalculator = ({
       });
       setIncomeName('');
       setIncomeValue('');
-      setIncomeCategory('Freelance');
+      setIncomeCategory('Freelance / Projeto');
     }
   };
 

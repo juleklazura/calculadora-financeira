@@ -60,6 +60,10 @@ body {
   height: fit-content;
 }
 
+.caixinhas-container {
+  margin-top: 2rem;
+}
+
 /* Responsividade */
 @media (max-width: 1024px) {
   .calculator-container {

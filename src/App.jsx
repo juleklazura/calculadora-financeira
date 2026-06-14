@@ -3,6 +3,7 @@ import './App.css';
 import Header from './components/Header';
 import FinanceCalculator from './components/FinanceCalculator';
 import Summary from './components/Summary';
+import Caixinhas from './components/Caixinhas';
 
 function App() {
   const loadFromLocalStorage = (key, defaultValue) => {
@@ -18,6 +19,7 @@ function App() {
   const [salary, setSalary] = useState(() => loadFromLocalStorage('calculadora-salary', ''));
   const [incomes, setIncomes] = useState(() => loadFromLocalStorage('calculadora-incomes', []));
   const [expenses, setExpenses] = useState(() => loadFromLocalStorage('calculadora-expenses', []));
+  const [caixinhas, setCaixinhas] = useState(() => loadFromLocalStorage('calculadora-caixinhas', []));
   const [totalIncomes, setTotalIncomes] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [remainingBalance, setRemainingBalance] = useState(0);
@@ -33,6 +35,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('calculadora-expenses', JSON.stringify(expenses));
   }, [expenses]);
+
+  useEffect(() => {
+    localStorage.setItem('calculadora-caixinhas', JSON.stringify(caixinhas));
+  }, [caixinhas]);
 
   useEffect(() => {
     const totalExp = expenses.reduce((sum, expense) => sum + parseFloat(expense.value || 0), 0);
@@ -81,6 +87,23 @@ function App() {
     localStorage.removeItem('calculadora-incomes');
   };
 
+  // Caixinhas
+  const addCaixinha = (caixinha) => {
+    setCaixinhas([...caixinhas, { ...caixinha, id: Date.now() }]);
+  };
+
+  const removeCaixinha = (id) => {
+    setCaixinhas(caixinhas.filter((c) => c.id !== id));
+  };
+
+  const editCaixinha = (id, updated) => {
+    setCaixinhas(caixinhas.map((c) => (c.id === id ? { ...c, ...updated } : c)));
+  };
+
+  const updateCaixinhaValor = (id, novoValor) => {
+    setCaixinhas(caixinhas.map((c) => (c.id === id ? { ...c, valorAtual: novoValor } : c)));
+  };
+
   return (
     <div className="App">
       <Header />
@@ -104,6 +127,15 @@ function App() {
             totalIncomes={totalIncomes}
             totalExpenses={totalExpenses}
             remainingBalance={remainingBalance}
+          />
+        </div>
+        <div className="caixinhas-container">
+          <Caixinhas
+            caixinhas={caixinhas}
+            addCaixinha={addCaixinha}
+            removeCaixinha={removeCaixinha}
+            editCaixinha={editCaixinha}
+            updateCaixinhaValor={updateCaixinhaValor}
           />
         </div>
       </main>
