@@ -16,116 +16,99 @@ const FinanceCalculator = ({
 }) => {
   const [expenseName, setExpenseName] = useState('');
   const [expenseValue, setExpenseValue] = useState('');
-  const [expenseCategory, setExpenseCategory] = useState('Supermercado');
+  const [expenseCategory, setExpenseCategory] = useState('Acessórios Tech');
   
   const [incomeName, setIncomeName] = useState('');
   const [incomeValue, setIncomeValue] = useState('');
-  const [incomeCategory, setIncomeCategory] = useState('Freelance / Projeto');
+  const [incomeCategory, setIncomeCategory] = useState('13º Salário');
   
   const [editingExpense, setEditingExpense] = useState(null);
   const [editingIncome, setEditingIncome] = useState(null);
 
   const categories = [
-    // Alimentação
-    'Supermercado',
-    'Restaurante e Delivery',
-    'Padaria e Confeitaria',
-    'Bebidas',
-    'Feira e Hortifruti',
-    // Moradia
-    'Aluguel / Financiamento',
-    'Condomínio',
-    'IPTU',
-    'Energia Elétrica',
-    'Água e Saneamento',
-    'Gás',
-    'Internet e TV',
-    'Telefone',
-    'Manutenção e Reforma',
-    // Transporte
-    'Combustível',
-    'Estacionamento e Pedágio',
-    'Transporte por App (Uber/99)',
-    'Transporte Público',
-    'Manutenção do Veículo',
-    'IPVA e Seguro Auto',
-    // Saúde
-    'Plano de Saúde',
-    'Consultas e Exames',
-    'Farmácia e Medicamentos',
+    'Acessórios Tech',
     'Academia e Esportes',
-    'Psicólogo / Terapia',
-    'Dentista',
-    // Educação
-    'Mensalidade Escolar / Faculdade',
-    'Cursos e Capacitação',
-    'Livros e Material Escolar',
-    'Idiomas',
-    // Lazer e Entretenimento
-    'Streaming (Netflix, Spotify…)',
+    'Água e Saneamento',
+    'Aluguel / Financiamento',
+    'Assinaturas de Software',
+    'Babá / Cuidador',
+    'Bebidas',
+    'Brinquedos e Atividades Infantis',
+    'Cartão de Crédito',
     'Cinema, Teatro e Shows',
-    'Viagens e Hospedagem',
+    'Combustível',
+    'Condomínio',
+    'Consultas e Exames',
+    'Cosméticos e Perfumaria',
+    'Cursos e Capacitação',
+    'Dentista',
+    'Eletrônicos e Gadgets',
+    'Emergências',
+    'Energia Elétrica',
+    'Escola dos Filhos',
+    'Estacionamento e Pedágio',
+    'Farmácia e Medicamentos',
+    'Feira e Hortifruti',
+    'Financiamento / Empréstimo',
+    'Gás',
     'Hobbies',
+    'Idiomas',
+    'Impostos e Taxas',
+    'Internet e TV',
+    'Investimentos',
+    'IPTU',
+    'IPVA e Seguro Auto',
     'Jogos',
-    // Vestuário e Beleza
+    'Livros e Material Escolar',
+    'Manutenção do Veículo',
+    'Manutenção e Reforma',
+    'Mensalidade Escolar / Faculdade',
+    'Outros',
+    'Padaria e Confeitaria',
+    'Pet Shop e Banho',
+    'Plano de Saúde',
+    'Presentes e Doações',
+    'Psicólogo / Terapia',
+    'Ração e Petiscos',
+    'Restaurante e Delivery',
     'Roupas e Calçados',
     'Salão de Beleza e Barbearia',
-    'Cosméticos e Perfumaria',
-    // Tecnologia
-    'Eletrônicos e Gadgets',
-    'Assinaturas de Software',
-    'Acessórios Tech',
-    // Família e Filhos
-    'Escola dos Filhos',
-    'Brinquedos e Atividades Infantis',
-    'Babá / Cuidador',
-    // Financeiro
-    'Cartão de Crédito',
-    'Financiamento / Empréstimo',
     'Seguros',
-    'Investimentos',
-    // Pets
-    'Ração e Petiscos',
+    'Streaming (Netflix, Spotify…)',
+    'Supermercado',
+    'Telefone',
+    'Transporte por App (Uber/99)',
+    'Transporte Público',
     'Veterinário',
-    'Pet Shop e Banho',
-    // Outros
-    'Presentes e Doações',
-    'Impostos e Taxas',
-    'Emergências',
-    'Outros',
+    'Viagens e Hospedagem',
   ];
 
   const incomeCategories = [
-    // Trabalho
-    'Salário',
-    'Freelance / Projeto',
-    'Trabalho Extra / Bico',
-    'Comissões',
-    'Bônus e PLR',
     '13º Salário',
-    'Férias',
-    'Horas Extras',
-    // Negócios
-    'Vendas de Produtos',
-    'Prestação de Serviços',
-    'Consultoria',
-    // Rendimentos
     'Aluguel de Imóvel',
-    'Dividendos',
-    'Rendimento de Investimentos',
-    'Juros e CDB / Tesouro',
-    // Digital
-    'Monetização Online (YouTube, etc.)',
-    'Marketing de Afiliados',
-    'Renda de Conteúdo',
-    'Vendas Online (Shopee, etc.)',
-    // Outros
     'Aposentadoria / Pensão',
-    'Reembolso',
+    'Bônus e PLR',
     'Cashback',
-    'Prêmios e Sorteios',
+    'Comissões',
+    'Consultoria',
+    'Dividendos',
+    'Férias',
+    'Freelance / Projeto',
     'Herança / Doação Recebida',
+    'Horas Extras',
+    'Juros e CDB / Tesouro',
+    'Marketing de Afiliados',
+    'Monetização Online (YouTube, etc.)',
     'Outros',
+    'Prestação de Serviços',
+    'Prêmios e Sorteios',
+    'Reembolso',
+    'Renda de Conteúdo',
+    'Rendimento de Investimentos',
+    'Salário',
+    'Trabalho Extra / Bico',
+    'Vendas de Produtos',
+    'Vendas Online (Shopee, etc.)',
   ];
 
   const handleAddExpense = (e) => {
@@ -138,7 +121,7 @@ const FinanceCalculator = ({
       });
       setExpenseName('');
       setExpenseValue('');
-      setExpenseCategory('Supermercado');
+      setExpenseCategory('Acessórios Tech');
     }
   };
 
@@ -152,7 +135,7 @@ const FinanceCalculator = ({
       });
       setIncomeName('');
       setIncomeValue('');
-      setIncomeCategory('Freelance / Projeto');
+      setIncomeCategory('13º Salário');
     }
   };
 
