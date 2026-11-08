@@ -1,5 +1,6 @@
 import React from 'react';
 import './Charts.css';
+import { formatMonthLabel } from '../utils/finance';
 
 const PALETTE = ['#d4af37', '#1e293b', '#059669', '#0ea5e9', '#f97316', '#8b5cf6', '#e11d48'];
 
@@ -75,8 +76,15 @@ const SeriesChart = ({ labels, series }) => {
 
       {lines.map((s) => (
         <g key={s.name}>
-          <path d={linePath(s.values)} fill="none" stroke={s.color} strokeWidth="2.5" strokeLinejoin="round" />
-          {s.values.map((v, i) =>
+          <path
+            d={linePath(s.values)}
+            fill="none"
+            stroke={s.color}
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+            strokeDasharray={s.dashed ? '6 6' : undefined}
+          />
+          {!s.dashed && s.values.map((v, i) =>
             v === null ? null : (
               <circle key={i} cx={xOf(i)} cy={yOf(v)} r="4" fill={s.color}>
                 <title>{`${labels[i]} · ${s.name}: ${formatCurrency(v)}`}</title>
@@ -95,7 +103,7 @@ const SeriesChart = ({ labels, series }) => {
   );
 };
 
-const ChartCard = ({ title, description, labels, series, className = '', emptyText }) => (
+const ChartCard = ({ title, description, labels, series, className = '', emptyText, footer }) => (
   <section className={`chart-card ${className}`}>
     <h3>{title}</h3>
     <p className="chart-description">{description}</p>
@@ -110,6 +118,7 @@ const ChartCard = ({ title, description, labels, series, className = '', emptyTe
           ))}
         </div>
         <SeriesChart labels={labels} series={series} />
+        {footer}
       </>
     ) : (
       <p className="chart-empty">{emptyText}</p>
@@ -120,12 +129,21 @@ const ChartCard = ({ title, description, labels, series, className = '', emptyTe
 const Charts = ({ evolution, year, years, onYearChange }) => {
   const { labels, salario, rendaTotal, gastos, saldo, caixinhas } = evolution;
 
-  const caixinhaSeries = caixinhas.map((c, i) => ({
-    name: c.nome,
-    type: 'line',
-    color: PALETTE[i % PALETTE.length],
-    values: c.values,
-  }));
+  const caixinhaSeries = caixinhas.flatMap((c, i) => {
+    const color = PALETTE[i % PALETTE.length];
+    const real = { name: c.nome, type: 'line', color, values: c.values };
+    if (c.dataAlcance === null || c.projecao.every((v) => v === null)) return [real];
+    return [real, { name: `${c.nome} (previsão)`, type: 'line', color, dashed: true, values: c.projecao }];
+  });
+
+  const previsoes = caixinhas.map((c) => {
+    let texto;
+    if (c.concluida) texto = `Meta atingida em ${formatMonthLabel(c.dataAlcance)}`;
+    else if (c.dataAlcance) {
+      texto = `Aportes médios de ${formatCurrency(c.taxa)}/mês · meta prevista para ${formatMonthLabel(c.dataAlcance)}`;
+    } else texto = 'Sem aportes recentes: não há previsão para a meta';
+    return { id: c.id, nome: c.nome, texto };
+  });
 
   return (
     <div className="charts-wrapper">
@@ -167,14 +185,26 @@ const Charts = ({ evolution, year, years, onYearChange }) => {
         <ChartCard
           className="wide"
           title="Caixinhas"
-          description="Valor guardado em cada caixinha ao fim de cada mês"
+          description="Valor guardado em cada caixinha ao fim de cada mês, com previsão tracejada até a meta, baseada nos aportes médios"
           labels={labels}
           series={caixinhaSeries}
           emptyText="Crie uma caixinha para acompanhar sua evolução aqui."
+          footer={
+            previsoes.length > 0 && (
+              <ul className="chart-previsoes">
+                {previsoes.map((p) => (
+                  <li key={p.id}>
+                    <strong>{p.nome}:</strong> {p.texto}
+                  </li>
+                ))}
+              </ul>
+            )
+          }
         />
       </div>
     </div>
   );
 };
+
 
 export default Charts;

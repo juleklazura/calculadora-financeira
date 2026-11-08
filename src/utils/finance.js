@@ -84,6 +84,41 @@ const valorCaixinhaEm = (caixinha, key) => {
   return valor;
 };
 
+const monthsBetween = (from, to) => {
+  const [y1, m1] = from.split('-').map(Number);
+  const [y2, m2] = to.split('-').map(Number);
+  return (y2 - y1) * 12 + (m2 - m1);
+};
+
+// Projeção da caixinha: ritmo médio de aportes mensais (desde o primeiro registro) e mês previsto para atingir a meta
+export const projetarCaixinha = (caixinha, currentKey) => {
+  const historico = getCaixinhaHistorico(caixinha);
+  const primeiro = historico[0];
+  const ultimo = historico[historico.length - 1];
+  const atual = caixinha.valorAtual || 0;
+  const meta = caixinha.meta || 0;
+  const taxa =
+    (atual - primeiro.valor) /
+    Math.max(1, monthsBetween(primeiro.data.slice(0, 7), ultimo.data.slice(0, 7)));
+  const concluida = meta > 0 && atual >= meta;
+
+  let dataAlcance = null;
+  if (concluida) {
+    const registro = historico.find((entry) => entry.valor >= meta);
+    dataAlcance = registro ? registro.data.slice(0, 7) : null;
+  } else if (meta > 0 && taxa > 0) {
+    dataAlcance = shiftMonthKey(currentKey, Math.ceil((meta - atual) / taxa));
+  }
+
+  // Valor projetado ao fim do mês `key`; só existe do mês atual até o mês previsto para a meta
+  const valorEm = (key) => {
+    if (concluida || dataAlcance === null || key < currentKey || key > dataAlcance) return null;
+    return Math.min(atual + taxa * monthsBetween(currentKey, key), meta);
+  };
+
+  return { taxa, concluida, dataAlcance, valorEm };
+};
+
 // Anos selecionáveis no gráfico: até 2 anos passados, o atual e até 2 anos à frente
 export const getChartYears = (currentMonth) => {
   const current = Number(currentMonth.slice(0, 4));
@@ -94,7 +129,7 @@ export const getChartYears = (currentMonth) => {
 const getYearMonthKeys = (year) =>
   Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, '0')}`);
 
-export const buildEvolution = ({ months, recurringExpenses, caixinhas, year }) => {
+export const buildEvolution = ({ months, recurringExpenses, caixinhas, year, currentMonth }) => {
   const keys = getYearMonthKeys(year);
 
   const rows = keys.map((key) => {
@@ -110,10 +145,17 @@ export const buildEvolution = ({ months, recurringExpenses, caixinhas, year }) =
     rendaTotal: rows.map((r) => r.rendaTotal),
     gastos: rows.map((r) => r.gastos),
     saldo: rows.map((r) => r.saldo),
-    caixinhas: caixinhas.map((c) => ({
-      id: c.id,
-      nome: c.nome,
-      values: keys.map((key) => valorCaixinhaEm(c, key)),
-    })),
+    caixinhas: caixinhas.map((c) => {
+      const projecao = projetarCaixinha(c, currentMonth);
+      return {
+        id: c.id,
+        nome: c.nome,
+        values: keys.map((key) => valorCaixinhaEm(c, key)),
+        projecao: keys.map(projecao.valorEm),
+        taxa: projecao.taxa,
+        concluida: projecao.concluida,
+        dataAlcance: projecao.dataAlcance,
+      };
+    }),
   };
 };

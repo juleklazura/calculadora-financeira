@@ -135,6 +135,16 @@
   font-family: var(--font-body);
 }
 
+.chart-previsoes {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--navy-blue);
+}
+
 .chart-empty {
   color: var(--warm-gray);
   font-size: 0.9rem;

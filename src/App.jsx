@@ -97,8 +97,8 @@ function App() {
   const [chartYear, setChartYear] = useState(() => Number(currentMonth.slice(0, 4)));
   const chartYears = useMemo(() => getChartYears(currentMonth), [currentMonth]);
   const evolution = useMemo(
-    () => buildEvolution({ months, recurringExpenses, caixinhas, year: chartYear }),
-    [months, recurringExpenses, caixinhas, chartYear]
+    () => buildEvolution({ months, recurringExpenses, caixinhas, year: chartYear, currentMonth }),
+    [months, recurringExpenses, caixinhas, chartYear, currentMonth]
   );
 
   const updateSelectedMonth = (update) => {
