@@ -1,6 +1,5 @@
 import React from 'react';
 import './Charts.css';
-import { formatMonthLabel } from '../utils/finance';
 
 const PALETTE = ['#d4af37', '#1e293b', '#059669', '#0ea5e9', '#f97316', '#8b5cf6', '#e11d48'];
 
@@ -35,6 +34,8 @@ const SeriesChart = ({ labels, series }) => {
   const innerH = HEIGHT - PAD.top - PAD.bottom;
   const yOf = (v) => PAD.top + innerH * (1 - (v - bottom) / (top - bottom));
   const band = innerW / labels.length;
+  // Com muitos meses (ex.: projeção até a meta), mostra um rótulo a cada N meses para não sobrepor
+  const labelStep = Math.max(1, Math.ceil(labels.length / 13));
   const xOf = (i) => PAD.left + band * (i + 0.5);
 
   const ticks = [0, 1, 2, 3, 4].map((i) => bottom + ((top - bottom) * i) / 4);
@@ -94,11 +95,13 @@ const SeriesChart = ({ labels, series }) => {
         </g>
       ))}
 
-      {labels.map((label, i) => (
-        <text key={`${label}-${i}`} x={xOf(i)} y={HEIGHT - 12} textAnchor="middle" className="chart-axis">
-          {label}
-        </text>
-      ))}
+      {labels.map((label, i) =>
+        i % labelStep === 0 ? (
+          <text key={`${label}-${i}`} x={xOf(i)} y={HEIGHT - 12} textAnchor="middle" className="chart-axis">
+            {label}
+          </text>
+        ) : null
+      )}
     </svg>
   );
 };
@@ -132,17 +135,8 @@ const Charts = ({ evolution, year, years, onYearChange }) => {
   const caixinhaSeries = caixinhas.flatMap((c, i) => {
     const color = PALETTE[i % PALETTE.length];
     const real = { name: c.nome, type: 'line', color, values: c.values };
-    if (c.dataAlcance === null || c.projecao.every((v) => v === null)) return [real];
-    return [real, { name: `${c.nome} (previsão)`, type: 'line', color, dashed: true, values: c.projecao }];
-  });
-
-  const previsoes = caixinhas.map((c) => {
-    let texto;
-    if (c.concluida) texto = `Meta atingida em ${formatMonthLabel(c.dataAlcance)}`;
-    else if (c.dataAlcance) {
-      texto = `Aportes médios de ${formatCurrency(c.taxa)}/mês · meta prevista para ${formatMonthLabel(c.dataAlcance)}`;
-    } else texto = 'Sem aportes recentes: não há previsão para a meta';
-    return { id: c.id, nome: c.nome, texto };
+    if (c.concluida || c.projecao.every((v) => v === null)) return [real];
+    return [real, { name: `${c.nome} (previsão)`, type: 'line', color: '#475569', dashed: true, values: c.projecao }];
   });
 
   return (
@@ -185,21 +179,10 @@ const Charts = ({ evolution, year, years, onYearChange }) => {
         <ChartCard
           className="wide"
           title="Caixinhas"
-          description="Valor guardado em cada caixinha ao fim de cada mês, com previsão tracejada até a meta, baseada nos aportes médios"
+          description="Linha contínua: valor atual de cada caixinha. Tracejada: previsão de evolução mês a mês até a meta"
           labels={labels}
           series={caixinhaSeries}
           emptyText="Crie uma caixinha para acompanhar sua evolução aqui."
-          footer={
-            previsoes.length > 0 && (
-              <ul className="chart-previsoes">
-                {previsoes.map((p) => (
-                  <li key={p.id}>
-                    <strong>{p.nome}:</strong> {p.texto}
-                  </li>
-                ))}
-              </ul>
-            )
-          }
         />
       </div>
     </div>
