@@ -1,9 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './App.css';
 import Header from './components/Header';
 import FinanceCalculator from './components/FinanceCalculator';
 import Summary from './components/Summary';
 import Caixinhas from './components/Caixinhas';
+import Charts from './components/Charts';
+import MonthNavigator from './components/MonthNavigator';
+import {
+  getMonthKey,
+  shiftMonthKey,
+  formatMonthLabel,
+  isRecurringActive,
+  getSalaryInfo,
+  getMonthIncomes,
+  getMonthExpenses,
+  sumValues,
+  registrarValorCaixinha,
+  buildEvolution,
+  getChartYears,
+} from './utils/finance';
+
+// Encerra recorrências ativas no mês `key` (todas, ou só a de `id`) a partir desse mês
+const stopRecurring = (list, key, id = null) => list.reduce((acc, template) => {
+  if (!isRecurringActive(template, key) || (id !== null && template.id !== id)) return [...acc, template];
+  if (template.startMonth === key) return acc;
+  return [...acc, { ...template, endMonth: key }];
+}, []);
+
+// Edita um gasto recorrente a partir de `key`: meses anteriores mantêm os valores antigos
+const editRecurring = (list, key, id, updated) => list.flatMap((template) => {
+  if (template.id !== id || !isRecurringActive(template, key)) return [template];
+  if (template.startMonth === key) return [{ ...template, ...updated }];
+  return [
+    { ...template, endMonth: key },
+    { ...template, ...updated, id: Date.now(), startMonth: key },
+  ];
+});
 
 function App() {
   const loadFromLocalStorage = (key, defaultValue) => {
@@ -16,102 +48,187 @@ function App() {
     }
   };
 
-  const [salary, setSalary] = useState(() => loadFromLocalStorage('calculadora-salary', ''));
-  const [incomes, setIncomes] = useState(() => loadFromLocalStorage('calculadora-incomes', []));
-  const [expenses, setExpenses] = useState(() => loadFromLocalStorage('calculadora-expenses', []));
+  const [currentMonth] = useState(() => getMonthKey(new Date()));
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+
+  // Cada mês guarda { salary?, incomes, expenses }. Sem `salary` próprio, herda o salário do mês atual.
+  const [months, setMonths] = useState(() => {
+    const saved = loadFromLocalStorage('calculadora-meses', null);
+    if (saved) return saved;
+
+    // Migração: dados antigos (sem separação por mês) passam a pertencer ao mês atual
+    const legacySalary = loadFromLocalStorage('calculadora-salary', '');
+    return {
+      [currentMonth]: {
+        ...(legacySalary !== '' ? { salary: legacySalary } : {}),
+        incomes: loadFromLocalStorage('calculadora-incomes', []),
+        expenses: loadFromLocalStorage('calculadora-expenses', []),
+      },
+    };
+  });
+  const [recurringExpenses, setRecurringExpenses] = useState(() => loadFromLocalStorage('calculadora-recorrentes', []));
   const [caixinhas, setCaixinhas] = useState(() => loadFromLocalStorage('calculadora-caixinhas', []));
-  const [totalIncomes, setTotalIncomes] = useState(0);
-  const [totalExpenses, setTotalExpenses] = useState(0);
-  const [remainingBalance, setRemainingBalance] = useState(0);
 
   useEffect(() => {
-    localStorage.setItem('calculadora-salary', JSON.stringify(salary));
-  }, [salary]);
+    localStorage.setItem('calculadora-meses', JSON.stringify(months));
+    localStorage.removeItem('calculadora-salary');
+    localStorage.removeItem('calculadora-incomes');
+    localStorage.removeItem('calculadora-expenses');
+  }, [months]);
 
   useEffect(() => {
-    localStorage.setItem('calculadora-incomes', JSON.stringify(incomes));
-  }, [incomes]);
-
-  useEffect(() => {
-    localStorage.setItem('calculadora-expenses', JSON.stringify(expenses));
-  }, [expenses]);
+    localStorage.setItem('calculadora-recorrentes', JSON.stringify(recurringExpenses));
+  }, [recurringExpenses]);
 
   useEffect(() => {
     localStorage.setItem('calculadora-caixinhas', JSON.stringify(caixinhas));
   }, [caixinhas]);
 
-  useEffect(() => {
-    const totalExp = expenses.reduce((sum, expense) => sum + parseFloat(expense.value || 0), 0);
-    const totalInc = incomes.reduce((sum, income) => sum + parseFloat(income.value || 0), 0);
-    const salaryValue = parseFloat(salary || 0);
-    
-    setTotalExpenses(totalExp);
-    setTotalIncomes(totalInc);
-    setRemainingBalance(salaryValue + totalInc - totalExp);
-  }, [salary, expenses, incomes]);
+  const salaryInfo = getSalaryInfo(months, selectedMonth);
+  const salary = salaryInfo.value;
+  const salaryRecurring = salaryInfo.recurring;
+  const incomes = getMonthIncomes(months, selectedMonth);
+  const expenses = getMonthExpenses(months, recurringExpenses, selectedMonth);
 
-  const addExpense = (expense) => {
-    setExpenses([...expenses, { ...expense, id: Date.now() }]);
+  const totalExpenses = sumValues(expenses);
+  const totalIncomes = sumValues(incomes);
+  const remainingBalance = parseFloat(salary || 0) + totalIncomes - totalExpenses;
+
+  const [chartYear, setChartYear] = useState(() => Number(currentMonth.slice(0, 4)));
+  const chartYears = useMemo(() => getChartYears(currentMonth), [currentMonth]);
+  const evolution = useMemo(
+    () => buildEvolution({ months, recurringExpenses, caixinhas, year: chartYear }),
+    [months, recurringExpenses, caixinhas, chartYear]
+  );
+
+  const updateSelectedMonth = (update) => {
+    setMonths((prev) => ({
+      ...prev,
+      [selectedMonth]: update(prev[selectedMonth] || {}),
+    }));
+  };
+
+  const updateSelectedList = (listKey, update) => {
+    updateSelectedMonth((month) => ({ ...month, [listKey]: update(month[listKey] || []) }));
+  };
+
+  // Salário recorrente é propagado para os meses futuros; sem recorrência, vale só para o mês
+  const writeSalary = (prev, key, value, recurring) => {
+    const next = {
+      ...prev,
+      [key]: { ...(prev[key] || {}), salary: value, salaryRecurring: recurring },
+    };
+    if (recurring) {
+      Object.keys(prev)
+        .filter((k) => k > key)
+        .forEach((k) => {
+          next[k] = { ...prev[k], salary: value, salaryRecurring: true };
+        });
+    }
+    return next;
+  };
+
+  const setSalary = (value) => {
+    setMonths((prev) => writeSalary(prev, selectedMonth, value, salaryRecurring));
+  };
+
+  // Marcar propaga o valor e a flag para os meses futuros; desmarcar vale só para o mês atual
+  const setSalaryRecurring = (flag) => {
+    setMonths((prev) => writeSalary(prev, selectedMonth, getSalaryInfo(prev, selectedMonth).value, flag));
+  };
+
+  const isRecurringId = (id) => String(id).startsWith('rec-');
+  const recurringTemplateId = (id) => Number(String(id).slice(4));
+
+  const addExpense = ({ recurring, ...expense }) => {
+    if (recurring) {
+      setRecurringExpenses((prev) => [...prev, { ...expense, id: Date.now(), startMonth: selectedMonth }]);
+      return;
+    }
+    updateSelectedList('expenses', (list) => [...list, { ...expense, id: Date.now() }]);
   };
 
   const removeExpense = (id) => {
-    setExpenses(expenses.filter(expense => expense.id !== id));
+    if (isRecurringId(id)) {
+      const templateId = recurringTemplateId(id);
+      setRecurringExpenses((prev) => stopRecurring(prev, selectedMonth, templateId));
+      return;
+    }
+    updateSelectedList('expenses', (list) => list.filter(expense => expense.id !== id));
   };
 
   const editExpense = (id, updatedExpense) => {
-    setExpenses(expenses.map(expense => 
+    if (isRecurringId(id)) {
+      const templateId = recurringTemplateId(id);
+      setRecurringExpenses((prev) => editRecurring(prev, selectedMonth, templateId, updatedExpense));
+      return;
+    }
+    updateSelectedList('expenses', (list) => list.map(expense =>
       expense.id === id ? { ...expense, ...updatedExpense } : expense
     ));
   };
 
   const addIncome = (income) => {
-    setIncomes([...incomes, { ...income, id: Date.now() }]);
+    updateSelectedList('incomes', (list) => [...list, { ...income, id: Date.now() }]);
   };
 
   const removeIncome = (id) => {
-    setIncomes(incomes.filter(income => income.id !== id));
+    updateSelectedList('incomes', (list) => list.filter(income => income.id !== id));
   };
 
   const editIncome = (id, updatedIncome) => {
-    setIncomes(incomes.map(income => 
+    updateSelectedList('incomes', (list) => list.map(income =>
       income.id === id ? { ...income, ...updatedIncome } : income
     ));
   };
 
   const clearAll = () => {
-    setSalary('');
-    setExpenses([]);
-    setIncomes([]);
-    localStorage.removeItem('calculadora-salary');
-    localStorage.removeItem('calculadora-expenses');
-    localStorage.removeItem('calculadora-incomes');
+    updateSelectedMonth(() => ({ salary: '', incomes: [], expenses: [] }));
+    setRecurringExpenses((prev) => stopRecurring(prev, selectedMonth));
   };
+
+  const goToPreviousMonth = () => setSelectedMonth((key) => shiftMonthKey(key, -1));
+  const goToNextMonth = () => setSelectedMonth((key) => shiftMonthKey(key, 1));
 
   // Caixinhas
   const addCaixinha = (caixinha) => {
-    setCaixinhas([...caixinhas, { ...caixinha, id: Date.now() }]);
+    setCaixinhas((prev) => [...prev, registrarValorCaixinha({ ...caixinha, id: Date.now() }, caixinha.valorAtual)]);
   };
 
   const removeCaixinha = (id) => {
-    setCaixinhas(caixinhas.filter((c) => c.id !== id));
+    setCaixinhas((prev) => prev.filter((c) => c.id !== id));
   };
 
   const editCaixinha = (id, updated) => {
-    setCaixinhas(caixinhas.map((c) => (c.id === id ? { ...c, ...updated } : c)));
+    setCaixinhas((prev) => prev.map((c) => {
+      if (c.id !== id) return c;
+      const mudouValor = updated.valorAtual !== undefined && updated.valorAtual !== c.valorAtual;
+      return mudouValor
+        ? { ...registrarValorCaixinha(c, updated.valorAtual), ...updated }
+        : { ...c, ...updated };
+    }));
   };
 
   const updateCaixinhaValor = (id, novoValor) => {
-    setCaixinhas(caixinhas.map((c) => (c.id === id ? { ...c, valorAtual: novoValor } : c)));
+    setCaixinhas((prev) => prev.map((c) => (c.id === id ? registrarValorCaixinha(c, novoValor) : c)));
   };
 
   return (
     <div className="App">
       <Header />
       <main className="main-content">
+        <MonthNavigator
+          label={formatMonthLabel(selectedMonth)}
+          onPrevious={goToPreviousMonth}
+          onNext={goToNextMonth}
+        />
         <div className="calculator-container">
           <FinanceCalculator
+            key={selectedMonth}
             salary={salary}
             setSalary={setSalary}
+            salaryRecurring={salaryRecurring}
+            setSalaryRecurring={setSalaryRecurring}
             expenses={expenses}
             addExpense={addExpense}
             removeExpense={removeExpense}
@@ -136,6 +253,14 @@ function App() {
             removeCaixinha={removeCaixinha}
             editCaixinha={editCaixinha}
             updateCaixinhaValor={updateCaixinhaValor}
+          />
+        </div>
+        <div className="charts-container">
+          <Charts
+            evolution={evolution}
+            year={chartYear}
+            years={chartYears}
+            onYearChange={setChartYear}
           />
         </div>
       </main>

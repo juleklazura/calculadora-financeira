@@ -1,0 +1,153 @@
+.charts-wrapper {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+}
+
+.charts-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.charts-header-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.charts-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.charts-year-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--navy-blue);
+  font-weight: 600;
+}
+
+.charts-year-select select {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: white;
+  color: var(--navy-blue);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.charts-year-select select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+}
+
+.charts-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--navy-blue);
+  margin: 0 0 0.2rem 0;
+}
+
+.charts-header p {
+  color: var(--warm-gray);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.chart-card {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.06), rgba(255, 255, 255, 0.95));
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-md);
+  min-width: 0;
+}
+
+.chart-card.wide {
+  grid-column: 1 / -1;
+}
+
+.chart-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--navy-blue);
+  margin: 0 0 0.25rem 0;
+}
+
+.chart-description {
+  color: var(--warm-gray);
+  font-size: 0.85rem;
+  margin: 0 0 1rem 0;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--navy-blue);
+}
+
+.chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.chart-legend i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chart-grid {
+  stroke: var(--border-color);
+  stroke-width: 1;
+}
+
+.chart-axis {
+  fill: var(--warm-gray);
+  font-size: 12px;
+  font-family: var(--font-body);
+}
+
+.chart-empty {
+  color: var(--warm-gray);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+@media (max-width: 1024px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .charts-wrapper {
+    padding: 1.25rem;
+  }
+}

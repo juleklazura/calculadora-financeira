@@ -60,7 +60,8 @@ body {
   height: fit-content;
 }
 
-.caixinhas-container {
+.caixinhas-container,
+.charts-container {
   margin-top: 2rem;
 }
 

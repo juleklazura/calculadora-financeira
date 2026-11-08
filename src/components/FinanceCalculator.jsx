@@ -4,6 +4,8 @@ import './FinanceCalculator.css';
 const FinanceCalculator = ({ 
   salary, 
   setSalary, 
+  salaryRecurring,
+  setSalaryRecurring,
   expenses, 
   addExpense, 
   removeExpense,
@@ -17,6 +19,7 @@ const FinanceCalculator = ({
   const [expenseName, setExpenseName] = useState('');
   const [expenseValue, setExpenseValue] = useState('');
   const [expenseCategory, setExpenseCategory] = useState('Acessórios Tech');
+  const [expenseRecurring, setExpenseRecurring] = useState(false);
   
   const [incomeName, setIncomeName] = useState('');
   const [incomeValue, setIncomeValue] = useState('');
@@ -117,11 +120,13 @@ const FinanceCalculator = ({
       addExpense({
         name: expenseName,
         value: parseFloat(expenseValue),
-        category: expenseCategory
+        category: expenseCategory,
+        recurring: expenseRecurring
       });
       setExpenseName('');
       setExpenseValue('');
       setExpenseCategory('Acessórios Tech');
+      setExpenseRecurring(false);
     }
   };
 
@@ -216,6 +221,14 @@ const FinanceCalculator = ({
               className="salary-input"
             />
           </div>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={salaryRecurring}
+              onChange={(e) => setSalaryRecurring(e.target.checked)}
+            />
+            Repetir nos próximos meses
+          </label>
         </div>
 
         <form onSubmit={handleAddIncome} className="income-form">
@@ -415,6 +428,14 @@ const FinanceCalculator = ({
               </button>
             </div>
           </div>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={expenseRecurring}
+              onChange={(e) => setExpenseRecurring(e.target.checked)}
+            />
+            Gasto recorrente (repetir todo mês)
+          </label>
         </form>
 
         {expenses.length > 0 && (
@@ -473,7 +494,10 @@ const FinanceCalculator = ({
                   ) : (
                     <>
                       <div className="expense-info">
-                        <span className="expense-name">{expense.name}</span>
+                        <span className="expense-name">
+                          {expense.name}
+                          {expense.recurring && <span className="recurring-tag"> · recorrente</span>}
+                        </span>
                         <span className="expense-category">{expense.category}</span>
                       </div>
                       <div className="expense-actions">
